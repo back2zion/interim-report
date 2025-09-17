@@ -1,0 +1,80 @@
+<!-- 푸터 -->
+<footer style="background: #f8f9fa; padding: 40px 0; margin-top: 80px; border-top: 1px solid #e0e0e0;">
+    <div style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 30px;">
+            <!-- 프로젝트 정보 -->
+            <div>
+                <h4 style="color: #1976d2; margin-bottom: 15px; font-size: 1.1rem;">📋 프로젝트 정보</h4>
+                <div style="color: #666; line-height: 1.8; font-size: 0.9rem;">
+                    <div><strong>프로젝트명:</strong> ex-GPT 시스템 구축</div>
+                    <div><strong>발주처:</strong> 한국도로공사</div>
+                    <div><strong>수행업체:</strong> DataStreams</div>
+                    <div><strong>기간:</strong> 2024.07 ~ 2024.12</div>
+                </div>
+            </div>
+
+            <!-- 시스템 정보 -->
+            <div>
+                <h4 style="color: #1976d2; margin-bottom: 15px; font-size: 1.1rem;">⚙️ 시스템 정보</h4>
+                <div style="color: #666; line-height: 1.8; font-size: 0.9rem;">
+                    <div><strong>모델:</strong> Qwen3-235B-A22B AWQ</div>
+                    <div><strong>프레임워크:</strong> React + Vite</div>
+                    <div><strong>백엔드:</strong> FastAPI + PostgreSQL</div>
+                    <div><strong>배포:</strong> Docker + Kubernetes</div>
+                </div>
+            </div>
+
+            <!-- 연락처 -->
+            <div>
+                <h4 style="color: #1976d2; margin-bottom: 15px; font-size: 1.1rem;">📞 연락처</h4>
+                <div style="color: #666; line-height: 1.8; font-size: 0.9rem;">
+                    <div><strong>개발팀:</strong> DataStreams R&D</div>
+                    <div><strong>기술지원:</strong> support@datastreams.co.kr</div>
+                    <div><strong>운영시간:</strong> 평일 09:00-18:00</div>
+                    <div><strong>긴급연락:</strong> 24/7 모니터링</div>
+                </div>
+            </div>
+
+            <!-- 빠른 링크 -->
+            <div>
+                <h4 style="color: #1976d2; margin-bottom: 15px; font-size: 1.1rem;">🔗 빠른 링크</h4>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <a href="https://ui.datastreams.co.kr:20443/exGenBotDS/mgrupd" style="color: #1976d2; text-decoration: none; font-size: 0.9rem;">임시 관리자 도구</a>
+                    <a href="https://preview--ex-gpt-admin.lovable.app/" style="color: #1976d2; text-decoration: none; font-size: 0.9rem;">정식 관리자 도구</a>
+                    <a href="https://github.com/datastreams-co/ex-gpt-frontend" style="color: #1976d2; text-decoration: none; font-size: 0.9rem;">React 프로젝트</a>
+                    <a href="system_architecture.html" style="color: #1976d2; text-decoration: none; font-size: 0.9rem;">시스템 구성도</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 하단 저작권 -->
+        <div style="text-align: center; padding-top: 30px; border-top: 1px solid #e0e0e0; color: #999; font-size: 0.85rem;">
+            <div style="margin-bottom: 10px;">
+                <strong style="color: #1976d2;">ex-GPT 시스템</strong> |
+                한국도로공사 생성형 AI 플랫폼
+            </div>
+            <div>
+                © 2024 DataStreams. 본 문서는 한국도로공사 내부 검토용으로 제작되었습니다.
+            </div>
+            <div style="margin-top: 10px; font-size: 0.8rem;">
+                🔒 기밀문서 | 📅 최종 업데이트: <span id="lastUpdate"></span>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script>
+// 현재 날짜를 푸터에 표시
+document.addEventListener('DOMContentLoaded', function() {
+    const lastUpdate = document.getElementById('lastUpdate');
+    if (lastUpdate) {
+        const now = new Date();
+        const formatted = now.toLocaleDateString('ko-KR', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        });
+        lastUpdate.textContent = formatted;
+    }
+});
+</script>

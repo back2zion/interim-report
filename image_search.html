@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>자연어 이미지 검색 | ex-GPT 시스템 중간 보고</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        /* 기본 리셋 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #fff;
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        /* 상단 유틸리티 바 */
+        .utility-bar {
+            background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+            color: white;
+            padding: 0.5rem 0;
+            font-size: 0.85rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1001;
+            height: 33px;
+            line-height: 1;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            width: 100%;
+        }
+
+        .utility-container {
+            width: 100%;
+            max-width: none;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .utility-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-weight: 500;
+        }
+
+        .utility-bar a {
+            color: white;
+            text-decoration: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 3px;
+            transition: background-color 0.3s ease;
+        }
+
+        .utility-bar a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* 메인 헤더 */
+        .main-header {
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+            position: fixed;
+            top: 33px;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            width: 100%;
+        }
+
+        .header-container {
+            width: 100%;
+            max-width: none;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .logo-partnership {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .partnership-divider {
+            font-size: 1.2rem;
+            color: #1976d2;
+            font-weight: 600;
+        }
+
+        .client-logo {
+            height: 40px;
+            width: auto;
+            cursor: pointer;
+        }
+
+        .datastreams-logo-img {
+            height: 40px;
+            width: auto;
+        }
+
+        .main-nav {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .main-nav a {
+            color: #333;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .main-nav a:hover,
+        .main-nav a.active {
+            background-color: #f5f5f5;
+            color: #1976d2;
+        }
+
+        /* 메인 콘텐츠 - Wide 레이아웃 */
+        .main-content {
+            margin-top: 113px;
+            padding: 60px 0;
+            width: 100%;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .wide-container {
+            width: 100%;
+            max-width: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 페이지 헤더 */
+        .page-header {
+            text-align: center;
+            margin-bottom: 60px;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            padding: 80px 0;
+            width: 100vw;
+            position: relative;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
+        }
+
+        .page-header h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .page-header p {
+            font-size: 1.5rem;
+            opacity: 0.95;
+        }
+
+        /* 핵심 가치 */
+        .core-value {
+            background: #f8f9fa;
+            padding: 60px 0;
+            margin: 60px 0 80px;
+            width: 100vw;
+            position: relative;
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
+        }
+
+        .core-value-container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            text-align: center;
+        }
+
+        .core-value h2 {
+            font-size: 3.5rem;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        .core-value p {
+            font-size: 1.6rem;
+            color: #6c757d;
+            margin-bottom: 40px;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.8;
+        }
+
+        .value-highlight {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            padding: 30px 50px;
+            border-radius: 20px;
+            display: inline-block;
+            font-size: 1.4rem;
+            font-weight: 600;
+            box-shadow: 0 15px 35px rgba(231, 76, 60, 0.3);
+        }
+
+        /* 섹션 타이틀 */
+        .section-title {
+            font-size: 2.8rem;
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 4px;
+            background: linear-gradient(90deg, #e74c3c, #c0392b);
+            border-radius: 2px;
+        }
+
+        /* 기능 소개 - Wide 그리드 */
+        .features-overview {
+            margin-bottom: 100px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 50px;
+            border-radius: 25px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            text-align: center;
+        }
+
+        .feature-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #e74c3c, #c0392b);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .feature-icon {
+            font-size: 4rem;
+            margin-bottom: 30px;
+            display: block;
+        }
+
+        .feature-title {
+            font-size: 1.8rem;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        .feature-description {
+            color: #6c757d;
+            line-height: 1.8;
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+        }
+
+        .feature-specs {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 5px solid #e74c3c;
+            text-align: left;
+        }
+
+        .spec-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .spec-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .spec-label {
+            font-weight: 500;
+            color: #495057;
+        }
+
+        .spec-value {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+
+        /* 사용 예시 - Wide 레이아웃 */
+        .demo-interface {
+            background: white;
+            padding: 60px;
+            border-radius: 25px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            margin-bottom: 100px;
+        }
+
+        .demo-interface h3 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 50px;
+            color: #2c3e50;
+        }
+
+        .examples-grid {
+            display: block;
+        }
+
+        .search-example {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+        }
+
+        .example-input {
+            background: #fff;
+            border: 3px solid #e74c3c;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            position: relative;
+            font-size: 1.2rem;
+        }
+
+        .example-input:before {
+            content: '💬';
+            position: absolute;
+            left: -15px;
+            top: -15px;
+            background: #e74c3c;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .example-output {
+            background: #e8f5e8;
+            border: 3px solid #28a745;
+            border-radius: 15px;
+            padding: 30px;
+            position: relative;
+            font-size: 1.2rem;
+        }
+
+        .example-output:before {
+            content: '🤖';
+            position: absolute;
+            left: -15px;
+            top: -15px;
+            background: #28a745;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .image-results {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .image-placeholder {
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            color: #6c757d;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .image-placeholder:hover {
+            border-color: #e74c3c;
+            background: #fff5f5;
+        }
+
+        .image-placeholder .placeholder-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        /* 기술 아키텍처 - Wide 레이아웃 */
+        .tech-architecture {
+            margin-bottom: 100px;
+        }
+
+        .architecture-diagram {
+            background: white;
+            padding: 60px;
+            border-radius: 25px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            margin-bottom: 80px;
+        }
+
+        .architecture-diagram h3 {
+            text-align: center;
+            margin-bottom: 50px;
+            color: #2c3e50;
+            font-size: 2.2rem;
+        }
+
+        .mermaid {
+            text-align: center;
+            width: 100%;
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+        }
+
+        .tech-card {
+            background: white;
+            padding: 50px;
+            border-radius: 25px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tech-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #ff6b6b, #ee5a24);
+        }
+
+        .tech-icon {
+            font-size: 4rem;
+            margin-bottom: 30px;
+            display: block;
+        }
+
+        .tech-title {
+            font-size: 1.8rem;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        .tech-description {
+            color: #6c757d;
+            margin-bottom: 30px;
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 10px 0;
+            position: relative;
+            padding-left: 30px;
+            color: #495057;
+            font-size: 1rem;
+        }
+
+        .feature-list li:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #e74c3c;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* 네비게이션 */
+        .nav-section {
+            margin-top: 100px;
+            text-align: center;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            padding: 18px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 8px 20px rgba(231, 76, 60, 0.3);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(231, 76, 60, 0.4);
+        }
+
+        .nav-btn.secondary {
+            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+            box-shadow: 0 8px 20px rgba(149, 165, 166, 0.3);
+        }
+
+        /* 푸터 */
+        .main-footer {
+            background: #2c3e50;
+            color: white;
+            padding: 4rem 0 2rem;
+            margin-top: 6rem;
+            width: 100%;
+        }
+
+        .footer-container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #34495e;
+            padding-top: 1rem;
+            text-align: center;
+            color: #bdc3c7;
+            font-size: 0.9rem;
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .features-grid,
+            .tech-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-container, .utility-container {
+                padding: 0 1rem;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .core-value h2 {
+                font-size: 2.2rem;
+            }
+
+            .core-value p {
+                font-size: 1.2rem;
+            }
+
+            .image-results {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .feature-card,
+            .tech-card {
+                padding: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 상단 유틸리티 바 -->
+    <div class="utility-bar">
+        <div class="utility-container">
+            <div class="utility-left">
+                <span>자연어 이미지 검색 | ex-GPT 중간보고</span>
+            </div>
+            <div class="utility-right">
+                <a href="system_architecture.html">시스템 구성도</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 메인 헤더 -->
+    <header class="main-header">
+        <div class="header-container">
+            <div class="logo-area">
+                <div class="logo-partnership">
+                        <a href="main_index.html"><img src="images/한국도로공사_logo.png" alt="한국도로공사" class="client-logo"></a>
+                    <span class="partnership-divider">×</span>
+                    <a href="main_index.html"><img src="images/ds_logo.svg" alt="DataStreams" class="datastreams-logo-img"></a>
+                </div>
+            </div>
+            <nav class="main-nav">
+                <a href="main_index.html">홈</a>
+                <a href="current_status.html">현황보고</a>
+                <a href="core_features.html">기능시연</a>
+                <a href="stt_automation.html">STT 자동화</a>
+                <a href="mcp_automation.html">MCP 자동화</a>
+                <a href="image_search.html" class="active">이미지 검색</a>
+                <a href="system_architecture.html">시스템 구성도</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="main-content">
+        <!-- 페이지 헤더 -->
+        <section class="page-header">
+            <div class="wide-container">
+                <h1>🖼️ 자연어 이미지 검색</h1>
+                <p>ex-GPT에 자연어로 사진을 요청하면 검색된 사진을 출력창에 보여주는 기능</p>
+            </div>
+        </section>
+
+        <!-- 핵심 가치 -->
+        <section class="core-value">
+            <div class="core-value-container">
+                <h2>핵심 기능</h2>
+                <p>
+                    사용자가 자연어로 "도로 사진을 찾아주세요"라고 요청하면<br>
+                    ex-GPT가 관련 이미지를 검색하여 출력창에 직접 표시해주는 직관적인 검색 기능입니다.
+                </p>
+                <div class="value-highlight">
+                    자연어 요청 → 벡터 검색 → 출력창 표시
+                </div>
+            </div>
+        </section>
+
+        <div class="container">
+            <!-- 기능 소개 -->
+            <section class="features-overview">
+                <h2 class="section-title">자연어 기반 이미지 검색</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <span class="feature-icon">💬</span>
+                        <h3 class="feature-title">자연어 이해</h3>
+                        <p class="feature-description">
+                            사용자가 일상 언어로 표현한 이미지 검색 요청을 
+                            정확히 이해하고 검색 의도를 파악합니다.
+                        </p>
+                        <div class="feature-specs">
+                            <div class="spec-item">
+                                <span class="spec-label">지원 언어:</span>
+                                <span class="spec-value">한국어</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">이해 정확도:</span>
+                                <span class="spec-value">95%+</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">처리 속도:</span>
+                                <span class="spec-value">실시간</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="feature-card">
+                        <span class="feature-icon">🔍</span>
+                        <h3 class="feature-title">벡터 기반 검색</h3>
+                        <p class="feature-description">
+                            Qdrant Vector DB를 활용하여 의미적 유사도 기반으로 
+                            가장 관련성 높은 이미지를 검색합니다.
+                        </p>
+                        <div class="feature-specs">
+                            <div class="spec-item">
+                                <span class="spec-label">벡터 DB:</span>
+                                <span class="spec-value">Qdrant (HNSW)</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">검색 속도:</span>
+                                <span class="spec-value">0.3-0.5초</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">정확도:</span>
+                                <span class="spec-value">95%+</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">리랭커:</span>
+                                <span class="spec-value">BGE-v2-m3</span>
+                            </div>
+                        </div>
+                        <p style="font-size: 0.75rem; color: #8e9aaf; margin-top: 15px; line-height: 1.4; font-style: italic;">
+                            * HNSW: Hierarchical Navigable Small World - 계층적 구조를 통해 빠른 근사 최근접 이웃 검색을 수행하는 고성능 벡터 인덱싱 알고리즘
+                        </p>
+                    </div>
+
+                    <div class="feature-card">
+                        <span class="feature-icon">🖼️</span>
+                        <h3 class="feature-title">출력창 직접 표시</h3>
+                        <p class="feature-description">
+                            검색된 이미지를 ex-GPT 출력창에 직접 표시하여 
+                            즉시 확인할 수 있도록 제공합니다.
+                        </p>
+                        <div class="feature-specs">
+                            <div class="spec-item">
+                                <span class="spec-label">표시 방식:</span>
+                                <span class="spec-value">인라인 표시</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">이미지 수:</span>
+                                <span class="spec-value">최대 8개</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">해상도:</span>
+                                <span class="spec-value">고품질</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 사용 예시 -->
+            <section class="demo-interface">
+                <h3>실제 사용 예시</h3>
+                
+                <div class="examples-grid">
+                    <div class="search-example">
+                        <div class="example-input">
+                            <strong>사용자 요청:</strong><br>
+                            "도로 공사 현장 사진을 보여주세요"
+                        </div>
+                        
+                        <div class="example-output">
+                            <strong>ex-GPT 응답:</strong><br>
+                            도로 공사 현장 사진을 찾아드렸습니다. 관련 이미지들을 확인하세요.
+                            
+                            <div class="image-results">
+                                <div class="image-placeholder">
+                                    <div class="placeholder-icon">🏗️</div>
+                                    <div>포장 공사</div>
+                                </div>
+                                <div class="image-placeholder">
+                                    <div class="placeholder-icon">🌉</div>
+                                    <div>교량 공사</div>
+                                </div>
+                                <div class="image-placeholder">
+                                    <div class="placeholder-icon">⚠️</div>
+                                    <div>안전시설</div>
+                                </div>
+                                <div class="image-placeholder">
+                                    <div class="placeholder-icon">🚧</div>
+                                    <div>차선표시</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="search-example">
+                        <div class="example-input">
+                            <strong>사용자 요청:</strong><br>
+                            "톨게이트 관련 사진이 필요해"
+                        </div>
+                        
+                        <div class="example-output">
+                            <strong>ex-GPT 응답:</strong><br>
+                            톨게이트와 관련된 사진들을 찾아드렸습니다.
+                            
+                            <div class="image-results">
+                                <div class="image-placeholder">
+                                    <div class="placeholder-icon">🛣️</div>
+                                    <div>톨게이트 전경</div>
+                                </div>
+                                <div class="image-placeholder">
+                                    <div class="placeholder-icon">💳</div>
+                                    <div>하이패스 부스</div>
+                                </div>
+                                <div class="image-placeholder">
+                                    <div class="placeholder-icon">🚗</div>
+                                    <div>차량 통과</div>
+                                </div>
+                                <div class="image-placeholder">
+                                    <div class="placeholder-icon">🏢</div>
+                                    <div>요금소 건물</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 기술 아키텍처 -->
+            <section class="tech-architecture">
+                <h2 class="section-title">기술 아키텍처</h2>
+                
+                <div class="architecture-diagram">
+                    <h3>자연어 이미지 검색 파이프라인</h3>
+                    <div class="mermaid">
+                        graph LR
+                            A[사용자 자연어 입력] --> B[Qwen3-VL 의도 분석]
+                            B --> C[Qdrant Vector DB<br/>벡터 검색]
+                            C --> D[BGE-reranker-v2-m3<br/>리랭킹]
+                            D --> E[출력창 이미지 표시<br/>최대 8개]
+                            
+                            style A fill:#e74c3c,stroke:#333,stroke-width:2px,color:#fff
+                            style E fill:#c0392b,stroke:#333,stroke-width:2px,color:#fff
+                            style B fill:#3742fa,stroke:#333,stroke-width:2px,color:#fff
+                            style D fill:#2f3640,stroke:#333,stroke-width:2px,color:#fff
+                    </div>
+                </div>
+
+                <div class="tech-grid">
+                    <div class="tech-card">
+                        <span class="tech-icon">🏗️</span>
+                        <h3 class="tech-title">벡터 임베딩 파이프라인</h3>
+                        <p class="tech-description">
+                            이미지와 텍스트를 고차원 벡터로 변환하여 
+                            의미적 유사성을 계산할 수 있는 형태로 처리합니다.
+                        </p>
+                        <ul class="feature-list">
+                            <li>임베딩 서버 </li>
+                            <li>멀티모달 벡터 생성</li>
+                            <li>실시간 임베딩 처리</li>
+                            <li>메모리 최적화 (97% 절감 가능)</li>
+                        </ul>
+                    </div>
+
+                    <div class="tech-card">
+                        <span class="tech-icon">🤖</span>
+                        <h3 class="tech-title">Vision Language Model (VLM)</h3>
+                        <p class="tech-description">
+                            이미지를 이해하고 자연어로 설명하는 멀티모달 AI 모델로 
+                            "이미지 속 사람이 뭘 하고 있나요?" 같은 질문에 답변합니다.
+                        </p>
+                        <ul class="feature-list">
+                            <li>Qwen3-32B/235B VLM 모델 활용</li>
+                            <li>H100 GPU 최적화 추론 파이프라인</li>
+                            <li>실시간 이미지 분석 및 설명 생성</li>
+                            <li>한국어 기반 이미지 질의응답</li>
+                        </ul>
+                    </div>
+
+                    <div class="tech-card">
+                        <span class="tech-icon">🔍</span>
+                        <h3 class="tech-title">멀티모달 검색 엔진</h3>
+                        <p class="tech-description">
+                            "회의실에서 발표하는 사진", "하이패스 게이트 사진" 등 
+                            자연어로 이미지를 검색할 수 있습니다.
+                        </p>
+                        <ul class="feature-list">
+                            <li>Qdrant Vector DB </li>
+                            <li>BGE-reranker-v2-m3 리랭킹 </li>
+                            <li>HNSW 알고리즘 기반 고속 검색</li>
+                            <li>99% 리콜에서 100ms 미만 지연시간</li>
+                            <li>5,000명 동시 사용자 지원</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 네비게이션 -->
+            <section class="nav-section">
+                <div class="nav-buttons">
+                    <a href="mcp_automation.html" class="nav-btn secondary">← 이전: MCP 업무 자동화</a>
+                    <a href="main_index.html" class="nav-btn secondary">🏠 메인으로</a>
+                    <a href="system_architecture.html" class="nav-btn">다음: 시스템 구성도 🏢</a>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="main-footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="project-info">
+                    <h3>ex-GPT 자연어 이미지 검색</h3>
+                    <p>벡터 기반 지능형 이미지 검색 시스템</p>
+                </div>
+                <div class="company-info">
+                    <p><strong>수행업체:</strong> DataStreams</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 DataStreams. 한국도로공사 ex-GPT 프로젝트.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mermaid 초기화
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis'
+            }
+        });
+
+        // 애니메이션 효과
+        document.addEventListener('DOMContentLoaded', function() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            });
+
+            document.querySelectorAll('.feature-card, .tech-card').forEach((el) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(el);
+            });
+        });
+
+        // 카드 호버 효과
+        document.querySelectorAll('.feature-card, .tech-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-15px) scale(1.03)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // 검색 예시 순차 애니메이션
+        document.querySelectorAll('.search-example').forEach((example, index) => {
+            setTimeout(() => {
+                example.style.opacity = '0';
+                example.style.transform = 'translateX(30px)';
+                example.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+                
+                setTimeout(() => {
+                    example.style.opacity = '1';
+                    example.style.transform = 'translateX(0)';
+                }, 300 * index);
+            }, 100);
+        });
+
+        // 이미지 플레이스홀더 호버 효과
+        document.querySelectorAll('.image-placeholder').forEach(placeholder => {
+            placeholder.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.05)';
+                this.style.borderColor = '#e74c3c';
+                this.style.background = '#fff5f5';
+            });
+            
+            placeholder.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+                this.style.borderColor = '#dee2e6';
+                this.style.background = '#f8f9fa';
+            });
+        });
+    </script>
+</body>
+</html>

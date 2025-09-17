@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCP 업무 자동화 | ex-GPT 시스템 중간 보고</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        /* 기본 리셋 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #fff;
+        }
+
+        /* 상단 유틸리티 바 */
+        .utility-bar {
+            background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+            color: white;
+            padding: 0.5rem 0;
+            font-size: 0.85rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1001;
+            height: 33px;
+            line-height: 1;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .utility-container {
+            width: 100%;
+            padding: 0 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .utility-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-weight: 500;
+        }
+
+        .utility-bar a {
+            color: white;
+            text-decoration: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 3px;
+            transition: background-color 0.3s ease;
+        }
+
+        .utility-bar a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* 메인 헤더 */
+        .main-header {
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+            position: fixed;
+            top: 33px;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header-container {
+            width: 100%;
+            padding: 0 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .logo-partnership {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .partnership-divider {
+            font-size: 1.2rem;
+            color: #1976d2;
+            font-weight: 600;
+        }
+
+        .client-logo {
+            height: 40px;
+            width: auto;
+            cursor: pointer;
+        }
+
+        .datastreams-logo-img {
+            height: 40px;
+            width: auto;
+            cursor: pointer;
+        }
+
+        .main-nav {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .main-nav a {
+            color: #333;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .main-nav a:hover,
+        .main-nav a.active {
+            background-color: #f5f5f5;
+            color: #1976d2;
+        }
+
+        /* 메인 콘텐츠 */
+        .main-content {
+            margin-top: 113px;
+            padding: 60px 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* 페이지 헤더 */
+        .page-header {
+            text-align: center;
+            margin-bottom: 60px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 80px 0;
+            margin: 0 -100vw 60px;
+            position: relative;
+            left: 50%;
+            right: 50%;
+            width: 100vw;
+            margin-left: -50vw;
+            margin-right: -50vw;
+        }
+
+        .page-header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .page-header p {
+            font-size: 1.3rem;
+            opacity: 0.95;
+        }
+
+        .page-header .duration-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            display: inline-block;
+            margin-top: 1rem;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+        }
+
+        /* 섹션 타이틀 */
+        .section-title {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #4facfe, #00f2fe);
+            border-radius: 2px;
+        }
+
+        /* 핵심 가치 섹션 */
+        .core-value {
+            background: #f8f9fa;
+            padding: 60px 0;
+            margin: 60px -100vw 80px;
+            position: relative;
+            left: 50%;
+            right: 50%;
+            width: 100vw;
+            margin-left: -50vw;
+            margin-right: -50vw;
+        }
+
+        .core-value-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            text-align: center;
+        }
+
+        .core-value h2 {
+            font-size: 3rem;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        .core-value p {
+            font-size: 1.4rem;
+            color: #6c757d;
+            margin-bottom: 40px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.8;
+        }
+
+        .value-highlight {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px 50px;
+            border-radius: 20px;
+            display: inline-block;
+            font-size: 1.3rem;
+            font-weight: 600;
+            box-shadow: 0 15px 35px rgba(79, 172, 254, 0.3);
+        }
+
+        /* MCP 프로세스 */
+        .mcp-process {
+            margin-bottom: 80px;
+        }
+
+        .process-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .process-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            text-align: center;
+        }
+
+        .process-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #4facfe, #00f2fe);
+        }
+
+        .process-card:hover {
+            transform: translateY(-8px);
+        }
+
+        .process-number {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .process-icon {
+            font-size: 3.5rem;
+            margin-bottom: 25px;
+            display: block;
+        }
+
+        .process-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .process-description {
+            color: #6c757d;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .process-example {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #4facfe;
+            text-align: left;
+        }
+
+        .example-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 8px;
+        }
+
+        .example-text {
+            color: #4facfe;
+            font-style: italic;
+            margin-bottom: 8px;
+        }
+
+        .example-result {
+            color: #28a745;
+            font-weight: 500;
+        }
+
+        /* 시스템 통합 다이어그램 */
+        .integration-diagram {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            margin: 60px 0;
+        }
+
+        .mermaid {
+            text-align: center;
+        }
+
+        /* 기술 스택 */
+        .tech-stack {
+            margin-bottom: 80px;
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+        }
+
+        .tech-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tech-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .tech-icon {
+            font-size: 3.5rem;
+            margin-bottom: 25px;
+            display: block;
+        }
+
+        .tech-title {
+            font-size: 1.6rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .tech-description {
+            color: #6c757d;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            position: relative;
+            padding-left: 25px;
+            color: #495057;
+        }
+
+        .feature-list li:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #4facfe;
+            font-weight: bold;
+        }
+
+        /* 사용 시나리오 */
+        .scenarios-section {
+            background: #f8f9fa;
+            padding: 80px 0;
+            margin: 60px -100vw 80px;
+            position: relative;
+            left: 50%;
+            right: 50%;
+            width: 100vw;
+            margin-left: -50vw;
+            margin-right: -50vw;
+        }
+
+        .scenarios-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .scenario-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab-button {
+            background: white;
+            border: 2px solid #e9ecef;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #495057;
+        }
+
+        .tab-button.active {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            color: white;
+            border-color: transparent;
+        }
+
+        .scenario-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .scenario-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .scenario-step {
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border-left: 4px solid #4facfe;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .step-icon {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .step-title {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .step-detail {
+            color: #6c757d;
+            line-height: 1.5;
+        }
+
+        /* 네비게이션 */
+        .nav-section {
+            margin-top: 80px;
+            text-align: center;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.3);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(79, 172, 254, 0.4);
+        }
+
+        .nav-btn.secondary {
+            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+            box-shadow: 0 5px 15px rgba(149, 165, 166, 0.3);
+        }
+
+        /* 푸터 */
+        .main-footer {
+            background: #2c3e50;
+            color: white;
+            padding: 3rem 0 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #34495e;
+            padding-top: 1rem;
+            text-align: center;
+            color: #bdc3c7;
+            font-size: 0.9rem;
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .process-grid,
+            .tech-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-container, .utility-container {
+                padding: 0 1rem;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .scenario-tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .core-value h2 {
+                font-size: 2.2rem;
+            }
+
+            .core-value p {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 상단 유틸리티 바 -->
+    <div class="utility-bar">
+        <div class="utility-container">
+            <div class="utility-left">
+                <span>MCP 업무 자동화 | ex-GPT 중간보고</span>
+            </div>
+            <div class="utility-right">
+                <a href="system_architecture.html">시스템 구성도</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 메인 헤더 -->
+    <header class="main-header">
+        <div class="header-container">
+            <div class="logo-area">
+                <div class="logo-partnership">
+                    <a href="main_index.html"><img src="images/한국도로공사_logo.png" alt="한국도로공사" class="client-logo"></a>
+                    <span class="partnership-divider">×</span>
+                    <a href="main_index.html"><img src="images/ds_logo.svg" alt="DataStreams" class="datastreams-logo-img"></a>
+                </div>
+            </div>
+            <nav class="main-nav">
+                <a href="main_index.html">홈</a>
+                <a href="current_status.html">현황보고</a>
+                <a href="core_features.html">기능시연</a>
+                <a href="stt_automation.html">STT 자동화</a>
+                <a href="mcp_automation.html" class="active">MCP 자동화</a>
+                <a href="image_search.html">이미지 검색</a>
+                <a href="system_architecture.html">시스템 구성도</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="main-content">
+        <!-- 페이지 헤더 -->
+        <section class="page-header">
+            <h1>🔗 MCP 업무 자동화</h1>
+            <p>Model Context Protocol 기반 통합 업무 처리 시스템</p>
+
+        </section>
+
+        <!-- 핵심 가치 -->
+        <section class="core-value">
+            <div class="core-value-container">
+                <h2>핵심 가치</h2>
+                <p>
+                    MCP(Model Context Protocol) 기술을 통해 자연어 한 마디로 
+                    복잡한 업무 과정을 완전 자동으로 처리하는 혁신적인 시스템입니다.
+                </p>
+                <div class="value-highlight">
+                    "내일 오후 회의실 예약해줘" → MCP가 즉시 예약 완료 처리
+                </div>
+            </div>
+        </section>
+
+        <div class="container">
+            <!-- MCP 프로세스 -->
+            <section class="mcp-process">
+                <h2 class="section-title">MCP 3단계 자동화 프로세스</h2>
+                <div class="process-grid">
+                    <div class="process-card">
+                        <div class="process-number">1</div>
+                        <span class="process-icon">🧠</span>
+                        <h3 class="process-title">MCP 실시간 시스템 연동</h3>
+                        <p class="process-description">
+                            사용자의 자연어 입력을 분석하여 MCP 라우터가 자동으로 
+                            관련 시스템들과 실시간 연동을 시작합니다.
+                        </p>
+                        <div class="process-example">
+                            <div class="example-label">입력 예시:</div>
+                            <div class="example-text">"내일 오후 사용 가능한 회의실 있나요?"</div>
+                            <div class="example-result">→ MCP가 회의실 시스템과 즉시 연결</div>
+                        </div>
+                    </div>
+
+                    <div class="process-card">
+                        <div class="process-number">2</div>
+                        <span class="process-icon">🔍</span>
+                        <h3 class="process-title">MCP 멀티시스템 통합 처리</h3>
+                        <p class="process-description">
+                            MCP가 여러 내부 시스템에서 동시에 데이터를 수집하고
+                            사용자 요청에 최적화된 솔루션을 자동 생성합니다.
+                        </p>
+                        <div class="process-example">
+                            <div class="example-label">처리 방식:</div>
+                            <div class="example-text">회의실 예약시스템 + 사용자 권한 + 일정관리</div>
+                            <div class="example-result">→ MCP가 모든 조건을 자동 확인</div>
+                        </div>
+                    </div>
+
+                    <div class="process-card">
+                        <div class="process-number">3</div>
+                        <span class="process-icon">🔗</span>
+                        <h3 class="process-title">MCP 자동 업무 완료 실행</h3>
+                        <p class="process-description">
+                            MCP가 분석된 정보를 바탕으로 실제 업무 처리를 자동 실행하고 
+                            관련자들에게 완료 알림을 발송합니다.
+                        </p>
+                        <div class="process-example">
+                            <div class="example-label">결과 예시:</div>
+                            <div class="example-text">"A동 201호 회의실이 예약 완료되었습니다"</div>
+                            <div class="example-result">→ MCP가 예약 완료 + 알림 자동 발송</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 시스템 통합 다이어그램 -->
+            <div class="integration-diagram" style="margin: 60px -100vw; position: relative; left: 50%; right: 50%; width: 100vw; margin-left: -50vw; margin-right: -50vw; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 60px 0;">
+                <div style="width: 100%; max-width: none; margin: 0; padding: 0 20px; box-sizing: border-box;">
+                    <h3 style="text-align: center; margin-bottom: 40px; color: #2c3e50; font-size: 2.2rem;">🏗️ MCP 기반 완전 자동화 워크플로우</h3>
+                    <div class="mermaid" style="background: white; border-radius: 20px; padding: 60px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); min-height: 600px; width: 100%; overflow-x: auto;">
+                        flowchart LR
+                            A["👤 사용자 입력<br/>내일 오후 회의실 예약해줘"] --> B["🧠 MCP 의도 분석<br/>자연어 처리 및 업무 유형 인식"]
+                            
+                            B --> C["⚡ MCP 라우터<br/>멀티시스템 동시 연결"]
+                            
+                            C --> D["💾 실시간 데이터 수집<br/>MCP가 모든 관련 시스템 조회"]
+                            
+                            C --> E["🔗 시스템 자동 연동<br/>MCP가 예약시스템과 직접 통신"]
+                            
+                            D --> F["⚙️ MCP 지능형 처리<br/>최적 선택 및 자동 업무 실행"]
+                            
+                            E --> F
+                            
+                            F --> G["💬 완료 알림<br/>예약 완료 상세 정보 제공"]
+                            
+                            F --> H["✨ 자동 처리 완료<br/>MCP가 모든 후속 업무까지 완료"]
+                            
+                            %% 스타일링
+                            classDef userInput fill:#4facfe,stroke:#333,stroke-width:3px,color:#fff,font-size:16px,font-weight:bold
+                            classDef processing fill:#667eea,stroke:#333,stroke-width:3px,color:#fff,font-size:16px,font-weight:bold
+                            classDef router fill:#764ba2,stroke:#333,stroke-width:3px,color:#fff,font-size:16px,font-weight:bold
+                            classDef data fill:#f093fb,stroke:#333,stroke-width:3px,color:#fff,font-size:16px,font-weight:bold
+                            classDef system fill:#ffecd2,stroke:#333,stroke-width:3px,color:#333,font-size:16px,font-weight:bold
+                            classDef engine fill:#a8edea,stroke:#333,stroke-width:3px,color:#333,font-size:16px,font-weight:bold
+                            classDef output fill:#00f2fe,stroke:#333,stroke-width:3px,color:#fff,font-size:16px,font-weight:bold
+                            classDef action fill:#28a745,stroke:#333,stroke-width:3px,color:#fff,font-size:16px,font-weight:bold
+                            
+                            class A userInput
+                            class B processing
+                            class C router
+                            class D data
+                            class E system
+                            class F engine
+                            class G output
+                            class H action
+                    </div>
+                </div>
+            </div>
+
+            <!-- 기술 스택 -->
+            <section class="tech-stack">
+                <h2 class="section-title">핵심 기술 스택</h2>
+                <div class="tech-grid">
+                    <div class="tech-card">
+                        <span class="tech-icon">🤖</span>
+                        <h3 class="tech-title">MCP 프로토콜 엔진</h3>
+                        <p class="tech-description">
+                            사용자 요청을 실시간으로 분석하고 적절한 시스템과 
+                            자동 연결하는 핵심 MCP 엔진입니다.
+                        </p>
+                        <ul class="feature-list">
+                            <li>실시간 멀티시스템 연결</li>
+                            <li>자동 권한 검증 및 처리</li>
+                            <li>지능형 오류 복구</li>
+                            <li>보안 강화된 내부망 통신</li>
+                        </ul>
+                    </div>
+
+                    <div class="tech-card">
+                        <span class="tech-icon">🔄</span>
+                        <h3 class="tech-title">MCP 자동화 오케스트레이션</h3>
+                        <p class="tech-description">
+                            MCP가 복잡한 업무 절차를 자동으로 관리하고 
+                            실패 시 즉시 대안을 실행합니다.
+                        </p>
+                        <ul class="feature-list">
+                            <li>자동 업무 순서 관리</li>
+                            <li>조건부 자동 분기 실행</li>
+                            <li>실시간 진행상황 추적</li>
+                            <li>스마트 재시도 및 복구</li>
+                        </ul>
+                    </div>
+
+                    <div class="tech-card">
+                        <span class="tech-icon">🧠</span>
+                        <h3 class="tech-title">MCP 학습형 업무 최적화</h3>
+                        <p class="tech-description">
+                            MCP가 사용자 패턴을 학습하여 점점 더 정확하고 
+                            빠른 자동화 서비스를 제공합니다.
+                        </p>
+                        <ul class="feature-list">
+                            <li>사용자 선호도 자동 학습</li>
+                            <li>업무 패턴 기반 예측 처리</li>
+                            <li>MCP 성능 자동 최적화</li>
+                            <li>개인정보 보호 강화</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 사용 시나리오 -->
+            <section class="scenarios-section">
+                <div class="scenarios-container">
+                    <h2 class="section-title" style="color: #2c3e50;">주요 사용 시나리오</h2>
+                    
+                    <div class="scenario-tabs">
+                        <button class="tab-button active" onclick="showScenario('meeting')">회의실 예약</button>
+                        <button class="tab-button" onclick="showScenario('vehicle')">배차 신청</button>
+                    </div>
+
+                    <div class="scenario-content">
+                        <div id="meeting-scenario" class="scenario-steps">
+                            <div class="scenario-step">
+                                <div class="step-header">
+                                    <div class="step-icon">1</div>
+                                    <div class="step-title">사용자 요청</div>
+                                </div>
+                                <div class="step-detail">
+                                    "내일 오후 2시에 10명이 참석할 수 있는 회의실 예약해줘"
+                                </div>
+                            </div>
+                            <div class="scenario-step">
+                                <div class="step-header">
+                                    <div class="step-icon">2</div>
+                                    <div class="step-title">조건 분석</div>
+                                </div>
+                                <div class="step-detail">
+                                    날짜, 시간, 인원수 조건을 파싱하고 가용한 회의실 목록을 조회
+                                </div>
+                            </div>
+                            <div class="scenario-step">
+                                <div class="step-header">
+                                    <div class="step-icon">3</div>
+                                    <div class="step-title">최적 선택</div>
+                                </div>
+                                <div class="step-detail">
+                                    사용자 이전 이용 패턴과 선호도를 고려하여 최적의 회의실 제안
+                                </div>
+                            </div>
+                            <div class="scenario-step">
+                                <div class="step-header">
+                                    <div class="step-icon">4</div>
+                                    <div class="step-title">예약 완료</div>
+                                </div>
+                                <div class="step-detail">
+                                    회의실 예약 완료 및 기본 알림 발송
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="vehicle-scenario" class="scenario-steps" style="display: none;">
+                            <div class="scenario-step">
+                                <div class="step-header">
+                                    <div class="step-icon">1</div>
+                                    <div class="step-title">이동 요청</div>
+                                </div>
+                                <div class="step-detail">
+                                    "김천에서 서울까지 내일 출장 배차 신청해줘"
+                                </div>
+                            </div>
+                            <div class="scenario-step">
+                                <div class="step-header">
+                                    <div class="step-icon">2</div>
+                                    <div class="step-title">경로 계산</div>
+                                </div>
+                                <div class="step-detail">
+                                    출발지, 목적지, 소요시간을 계산하고 가용 차량 확인
+                                </div>
+                            </div>
+                            <div class="scenario-step">
+                                <div class="step-header">
+                                    <div class="step-icon">3</div>
+                                    <div class="step-title">승인 처리</div>
+                                </div>
+                                <div class="step-detail">
+                                    자동 승인 조건 확인 또는 관리자 승인 요청 프로세스 실행
+                                </div>
+                            </div>
+                            <div class="scenario-step">
+                                <div class="step-header">
+                                    <div class="step-icon">4</div>
+                                    <div class="step-title">배차 신청 완료</div>
+                                </div>
+                                <div class="step-detail">
+                                    배차 신청 완료 및 기본 승인 대기
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 네비게이션 -->
+            <section class="nav-section">
+                <div class="nav-buttons">
+                    <a href="stt_automation.html" class="nav-btn secondary">← 이전: STT 회의록 자동화</a>
+                    <a href="main_index.html" class="nav-btn secondary">🏠 메인으로</a>
+                    <a href="image_search.html" class="nav-btn">다음: 멀티모달 이미지 검색 🖼️</a>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="main-footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="project-info">
+                    <h3>ex-GPT MCP 업무 자동화</h3>
+                    <p>Model Context Protocol 기반 통합 업무 처리 시스템</p>
+                </div>
+                <div class="company-info">
+                    <p><strong>수행업체:</strong> DataStreams</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 DataStreams. 한국도로공사 ex-GPT 프로젝트.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mermaid 초기화 (단순하고 큰 글씨로)
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'linear',
+                padding: 30,
+                nodeSpacing: 100,
+                rankSpacing: 150
+            },
+            themeVariables: {
+                primaryColor: '#4facfe',
+                primaryTextColor: '#333',
+                primaryBorderColor: '#333',
+                lineColor: '#666',
+                fontSize: '18px'
+            }
+        });
+
+        // 시나리오 탭 전환
+        function showScenario(scenario) {
+            // 모든 탭 버튼 비활성화
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // 모든 시나리오 숨기기
+            document.querySelectorAll('.scenario-steps').forEach(steps => {
+                steps.style.display = 'none';
+            });
+            
+            // 선택된 탭 활성화
+            event.target.classList.add('active');
+            
+            // 선택된 시나리오 표시
+            document.getElementById(scenario + '-scenario').style.display = 'grid';
+        }
+
+        // 애니메이션 효과
+        document.addEventListener('DOMContentLoaded', function() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            });
+
+            document.querySelectorAll('.process-card, .tech-card, .scenario-step').forEach((el) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(el);
+            });
+        });
+
+        // 카드 호버 효과
+        document.querySelectorAll('.process-card, .tech-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-12px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // 로고 클릭 이벤트
+        document.querySelectorAll('.client-logo, .datastreams-logo-img').forEach(logo => {
+            logo.addEventListener('click', function() {
+                window.location.href = 'main_index.html';
+            });
+        });
+    </script>
+</body>
+</html>

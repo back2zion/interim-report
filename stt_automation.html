@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STT 회의록 자동화 | ex-GPT 시스템 중간 보고</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        /* 기본 리셋 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #fff;
+        }
+
+        /* 상단 유틸리티 바 */
+        .utility-bar {
+            background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+            color: white;
+            padding: 0.5rem 0;
+            font-size: 0.85rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1001;
+            height: 33px;
+            line-height: 1;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .utility-container {
+            width: 100%;
+            padding: 0 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .utility-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-weight: 500;
+        }
+
+        .utility-bar a {
+            color: white;
+            text-decoration: none;
+            padding: 0.3rem 0.8rem;
+            border-radius: 3px;
+            transition: background-color 0.3s ease;
+        }
+
+        .utility-bar a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* 메인 헤더 */
+        .main-header {
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+            position: fixed;
+            top: 33px;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header-container {
+            width: 100%;
+            padding: 0 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .logo-partnership {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .partnership-divider {
+            font-size: 1.2rem;
+            color: #1976d2;
+            font-weight: 600;
+        }
+
+        .client-logo {
+            height: 40px;
+            width: auto;
+            cursor: pointer;
+        }
+
+        .datastreams-logo-img {
+            height: 40px;
+            width: auto;
+            cursor: pointer;
+        }
+
+        .main-nav {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .main-nav a {
+            color: #333;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .main-nav a:hover,
+        .main-nav a.active {
+            background-color: #f5f5f5;
+            color: #1976d2;
+        }
+
+        /* 메인 콘텐츠 */
+        .main-content {
+            margin-top: 113px;
+            padding: 60px 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* 페이지 헤더 */
+        .page-header {
+            text-align: center;
+            margin-bottom: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 80px 0;
+            margin: 0 -100vw 60px;
+            position: relative;
+            left: 50%;
+            right: 50%;
+            width: 100vw;
+            margin-left: -50vw;
+            margin-right: -50vw;
+        }
+
+        .page-header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .page-header p {
+            font-size: 1.3rem;
+            opacity: 0.95;
+        }
+
+        /* 섹션 타이틀 */
+        .section-title {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 50px;
+            position: relative;
+        }
+
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        /* 핵심 가치 섹션 */
+        .core-values-section {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 80px 0;
+            margin: 60px -100vw 80px;
+            position: relative;
+            left: 50%;
+            right: 50%;
+            width: 100vw;
+            margin-left: -50vw;
+            margin-right: -50vw;
+        }
+
+        .values-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+
+        .value-item {
+            text-align: center;
+            padding: 30px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+        }
+
+        .value-item:hover {
+            transform: translateY(-10px);
+        }
+
+        .value-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .value-item h3 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .value-item p {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        /* 프로세스 플로우 */
+        .process-flow {
+            margin-bottom: 80px;
+        }
+
+        .flow-diagram {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            margin-bottom: 60px;
+        }
+
+        .mermaid {
+            text-align: center;
+        }
+
+        /* 스텝 카드 */
+        .steps-section {
+            margin-bottom: 80px;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .step-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .step-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .step-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .step-number {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .step-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .step-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .step-description {
+            color: #6c757d;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .tech-specs {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .tech-spec-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .tech-spec-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .tech-label {
+            font-weight: 500;
+            color: #495057;
+        }
+
+        .tech-value {
+            color: #667eea;
+            font-weight: 500;
+        }
+
+        /* 기술적 혁신 */
+        .innovation-section {
+            margin-bottom: 80px;
+        }
+
+        .innovation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 40px;
+        }
+
+        .innovation-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .innovation-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #4facfe, #00f2fe);
+        }
+
+        .innovation-icon {
+            font-size: 3.5rem;
+            margin-bottom: 25px;
+            display: block;
+        }
+
+        .innovation-title {
+            font-size: 1.6rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .innovation-description {
+            color: #6c757d;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            position: relative;
+            padding-left: 25px;
+            color: #495057;
+        }
+
+        .feature-list li:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #4facfe;
+            font-weight: bold;
+        }
+
+        /* 성능 지표 */
+        .performance-metrics {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 60px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .metric-item {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+
+        .metric-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .metric-label {
+            color: #6c757d;
+            font-size: 1rem;
+        }
+
+        /* 네비게이션 */
+        .nav-section {
+            margin-top: 80px;
+            text-align: center;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-btn.secondary {
+            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+            box-shadow: 0 5px 15px rgba(149, 165, 166, 0.3);
+        }
+
+        /* 푸터 */
+        .main-footer {
+            background: #2c3e50;
+            color: white;
+            padding: 3rem 0 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #34495e;
+            padding-top: 1rem;
+            text-align: center;
+            color: #bdc3c7;
+            font-size: 0.9rem;
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .steps-grid,
+            .innovation-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-container, .utility-container {
+                padding: 0 1rem;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .metrics-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+
+            .values-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .value-item {
+                padding: 20px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 상단 유틸리티 바 -->
+    <div class="utility-bar">
+        <div class="utility-container">
+            <div class="utility-left">
+                <span>STT 회의록 자동화 | ex-GPT 중간보고</span>
+            </div>
+            <div class="utility-right">
+                <a href="system_architecture.html">시스템 구성도</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 메인 헤더 -->
+    <header class="main-header">
+        <div class="header-container">
+            <div class="logo-area">
+                <div class="logo-partnership">
+                    <a href="main_index.html"><img src="images/한국도로공사_logo.png" alt="한국도로공사" class="client-logo"></a>
+                    <span class="partnership-divider">×</span>
+                    <a href="main_index.html"><img src="images/ds_logo.svg" alt="DataStreams" class="datastreams-logo-img"></a>
+                </div>
+            </div>
+            <nav class="main-nav">
+                <a href="main_index.html">홈</a>
+                <a href="current_status.html">현황보고</a>
+                <a href="core_features.html">기능시연</a>
+                <a href="stt_automation.html" class="active">STT 자동화</a>
+                <a href="mcp_automation.html">MCP 자동화</a>
+                <a href="image_search.html">이미지 검색</a>
+                <a href="system_architecture.html">시스템 구성도</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 메인 콘텐츠 -->
+    <main class="main-content">
+        <!-- 페이지 헤더 -->
+        <section class="page-header">
+            <h1>🎤 STT 회의록 자동화</h1>
+            <p>음성인식 기반 지능형 회의록 생성 시스템</p>
+        </section>
+
+        <div class="container">
+            <!-- 핵심 가치 섹션 -->
+            <section class="core-values-section">
+                <div class="values-container">
+                    <div class="value-item">
+                        <div class="value-icon">🎯</div>
+                        <h3>업무 효율성</h3>
+                        <p>회의록 작성 시간을 90% 단축하여 핵심 업무에 집중할 수 있는 환경을 제공합니다.</p>
+                    </div>
+                    <div class="value-item">
+                        <div class="value-icon">🔄</div>
+                        <h3>완전 자동화</h3>
+                        <p>음성에서 완성된 회의록까지 전 과정을 자동화하여 인적 오류를 최소화합니다.</p>
+                    </div>
+                    <div class="value-item">
+                        <div class="value-icon">📋</div>
+                        <h3>표준화된 품질</h3>
+                        <p>일관된 형식과 구조로 회의록을 생성하여 문서의 품질과 활용도를 향상시킵니다.</p>
+                    </div>
+                    <div class="value-item">
+                        <div class="value-icon">⚡</div>
+                        <h3>즉시 배포</h3>
+                        <p>회의 종료와 동시에 관련자들에게 자동으로 배포하여 빠른 의사결정을 지원합니다.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- 프로세스 플로우 -->
+            <section class="process-flow">
+                <h2 class="section-title">AI 회의록 작성 플로우</h2>
+                <div class="flow-diagram">
+                    <div class="mermaid">
+                        graph TD
+                            A[📱 모바일 앱<br/>녹음파일 전송] --> B[🌐 ex-GPT 백엔드<br/>파일 수신]
+                            B --> C[🎤 Whisper Large V3<br/>STT 변환 처리]
+                            C --> D[📚 사전 활용<br/>후처리 작업]
+                            D --> E[🤖 LLM 활용<br/>회의록 생성]
+                            E --> F[📧 이메일 발송<br/>2개 파일 전송]
+                            
+                            F --> G[📄 STT txt 파일]
+                            F --> H[📋 회의록 txt 파일]
+                            
+                            style A fill:#667eea,stroke:#333,stroke-width:2px,color:#fff
+                            style E fill:#f093fb,stroke:#333,stroke-width:2px,color:#fff
+                            style F fill:#4facfe,stroke:#333,stroke-width:2px,color:#fff
+                            style G fill:#2ecc71,stroke:#333,stroke-width:2px,color:#fff
+                            style H fill:#e74c3c,stroke:#333,stroke-width:2px,color:#fff
+                    </div>
+                </div>
+            </section>
+
+            <!-- 단계별 상세 설명 -->
+            <section class="steps-section">
+                <h2 class="section-title">6단계 자동화 프로세스</h2>
+                <div class="steps-grid">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <span class="step-icon">📱</span>
+                        <h3 class="step-title">모바일 앱 파일 전송</h3>
+                        <p class="step-description">
+                            사용자가 모바일 앱에서 녹음파일을 ex-GPT 시스템으로 
+                            직접 전송하여 프로세스를 시작합니다.
+                        </p>
+                        <div class="tech-specs">
+                            <div class="tech-spec-item">
+                                <span class="tech-label">지원 형식:</span>
+                                <span class="tech-value">WAV, MP3, M4A</span>
+                            </div>
+                            <div class="tech-spec-item">
+                                <span class="tech-label">최대 크기:</span>
+                                <span class="tech-value">100MB</span>
+                            </div>
+                            <div class="tech-spec-item">
+                                <span class="tech-label">전송 방식:</span>
+                                <span class="tech-value">HTTP Upload</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <span class="step-icon">🌐</span>
+                        <h3 class="step-title">ex-GPT 백엔드 수신</h3>
+                        <p class="step-description">
+                            ex-GPT 백엔드 시스템에서 업로드된 파일을 수신하고 
+                            처리를 위한 준비 작업을 수행합니다.
+                        </p>
+                        <div class="tech-specs">
+                            <div class="tech-spec-item">
+                                <span class="tech-label">프레임워크:</span>
+                                <span class="tech-value">FastAPI</span>
+                            </div>
+                            <div class="tech-spec-item">
+                                <span class="tech-label">파일 검증:</span>
+                                <span class="tech-value">형식/크기 확인</span>
+                            </div>
+                            <div class="tech-spec-item">
+                                <span class="tech-label">임시 저장:</span>
+                                <span class="tech-value">로컬 스토리지</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <span class="step-icon">🎤</span>
+                        <h3 class="step-title">Whisper Large V3 STT</h3>
+                        <p class="step-description">
+                            OpenAI Whisper Large V3 모델을 활용하여 
+                            음성 파일을 텍스트로 변환합니다.
+                        </p>
+                        <div class="tech-specs">
+                            <div class="tech-spec-item">
+                                <span class="tech-label">모델:</span>
+                                <span class="tech-value">Whisper Large V3</span>
+                            </div>
+                            <div class="tech-spec-item">
+                                <span class="tech-label">한국어 CER:</span>
+                                <span class="tech-value">3.1%</span>
+                            </div>
+                            <div class="tech-spec-item">
+                                <span class="tech-label">처리 속도:</span>
+                                <span class="tech-value">실시간 대비 0.3x</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-card">
+                        <div class="step-number">4</div>
+                        <span class="step-icon">📚</span>
+                        <h3 class="step-title">사전 활용 후처리</h3>
+                        <p class="step-description">
+                            도로공사 전문용어 사전을 활용하여 
+                            STT 결과를 보정하고 정제합니다.
+                        </p>
+                        <div class="tech-specs">
+                            <div class="tech-spec-item">
+                                <span class="tech-label">방식:</span>
+                                <span class="tech-value">사전 기반 매칭</span>
+                            </div>
+                            <div class="tech-spec-item">
+                                <span class="tech-label">전문용어:</span>
+                                <span class="tech-value">하이패스, IC, 휴게소</span>
+                            </div>
+                            <div class="tech-spec-item">
+                                <span class="tech-label">처리:</span>
+                                <span class="tech-value">문자열 치환</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-card">
+                        <div class="step-number">5</div>
+                        <span class="step-icon">🤖</span>
+                        <h3 class="step-title">LLM 회의록 생성</h3>
+                        <p class="step-description">
+                            대화형 AI 모델을 활용하여 STT 텍스트를 
+                            구조화된 회의록 형태로 변환합니다.
+                        </p>
+                        <div class="tech-specs">
+                            <div class="tech-spec-item">
+                                <span class="tech-label">모델:</span>
+                                <span class="tech-value">Qwen3-235B-A22B</span>
+                            </div>
+                            <div class="tech-spec-item">
+                                <span class="tech-label">템플릿:</span>
+                                <span class="tech-value">도로공사 표준양식</span>
+                            </div>
+                            <div class="tech-spec-item">
+                                <span class="tech-label">구조화:</span>
+                                <span class="tech-value">주요 안건/결정사항</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-card">
+                        <div class="step-number">6</div>
+                        <span class="step-icon">📧</span>
+                        <h3 class="step-title">이메일 자동 발송</h3>
+                        <p class="step-description">
+                            처리 완료 후 STT 텍스트 파일과 회의록 파일을 
+                            각각 txt 형태로 이메일 첨부하여 발송합니다.
+                        </p>
+                        <div class="tech-specs">
+                            <div class="tech-spec-item">
+                                <span class="tech-label">첨부파일:</span>
+                                <span class="tech-value">2개 txt 파일</span>
+                            </div>
+                            <div class="tech-spec-item">
+                                <span class="tech-label">발송 방식:</span>
+                                <span class="tech-value">SMTP 자동발송</span>
+                            </div>
+                            <div class="tech-spec-item">
+                                <span class="tech-label">처리 시간:</span>
+                                <span class="tech-value">5-10분</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 기술적 구현 요소 -->
+            <section class="innovation-section">
+                <h2 class="section-title">핵심 기술 구현 방향</h2>
+                <div class="innovation-grid">
+                    <div class="innovation-card">
+                        <span class="innovation-icon">🔧</span>
+                        <h3 class="innovation-title">기존 인프라 활용</h3>
+                        <p class="innovation-description">
+                            현재 ex-GPT 프로젝트의 FastAPI 기반 시스템에 
+                            STT 모듈을 추가하여 개발합니다.
+                        </p>
+                        <ul class="feature-list">
+                            <li>FastAPI 엔드포인트 추가</li>
+                            <li>기존 시스템과 완전 통합</li>
+                            <li>안정적인 서비스 운영</li>
+                            <li>확장 가능한 모듈 설계</li>
+                        </ul>
+                    </div>
+
+                    <div class="innovation-card">
+                        <span class="innovation-icon">⚙️</span>
+                        <h3 class="innovation-title">실용적 접근법</h3>
+                        <p class="innovation-description">
+                            검증된 라이브러리와 LLM을 조합하여 
+                            안정적이고 효과적인 시스템을 구현합니다.
+                        </p>
+                        <ul class="feature-list">
+                            <li>Whisper 모델 직접 활용</li>
+                            <li>사전 기반 용어 교정</li>
+                            <li>LLM 기반 회의록 생성</li>
+                            <li>간단하고 유지보수 용이</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 최종 결과물 명시 -->
+            <section class="performance-metrics">
+                <h2 class="section-title">최종 결과물</h2>
+                <div class="metrics-grid">
+                    <div class="metric-item">
+                        <div class="metric-number">2개</div>
+                        <div class="metric-label">txt 파일 제공</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-number">📄</div>
+                        <div class="metric-label">STT 원본 텍스트</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-number">📋</div>
+                        <div class="metric-label">구조화된 회의록</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-number">📧</div>
+                        <div class="metric-label">이메일 자동 발송</div>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 15px;">
+                    <h4 style="color: #2c3e50; margin-bottom: 15px;">📦 사용자 수신 파일</h4>
+                    <p style="color: #6c757d; font-size: 1.1rem; line-height: 1.6;">
+                        ① <strong>STT_결과_[날짜시간].txt</strong> - Whisper로 변환된 원본 음성인식 텍스트<br>
+                        ② <strong>회의록_[날짜시간].txt</strong> - LLM으로 생성된 구조화된 회의록 문서
+                    </p>
+                </div>
+            </section>
+
+            <!-- 네비게이션 -->
+            <section class="nav-section">
+                <div class="nav-buttons">
+                    <a href="core_features.html" class="nav-btn secondary">← 이전: 핵심 기능 시연</a>
+                    <a href="main_index.html" class="nav-btn secondary">🏠 메인으로</a>
+                    <a href="mcp_automation.html" class="nav-btn">다음: MCP 업무 자동화 🔗</a>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- 푸터 -->
+    <footer class="main-footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="project-info">
+                    <h3>ex-GPT STT 회의록 자동화</h3>
+                    <p>모바일에서 이메일까지 완전 자동화된 회의록 생성 시스템</p>
+                </div>
+                <div class="company-info">
+                    <p><strong>수행업체:</strong> DataStreams</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 DataStreams. 한국도로공사 ex-GPT 프로젝트.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mermaid 초기화
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis'
+            }
+        });
+
+        // 애니메이션 효과
+        document.addEventListener('DOMContentLoaded', function() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            });
+
+            document.querySelectorAll('.step-card, .innovation-card, .performance-metrics').forEach((el) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(el);
+            });
+        });
+
+        // 로고 클릭 이벤트
+        document.querySelectorAll('.client-logo, .datastreams-logo-img').forEach(logo => {
+            logo.addEventListener('click', function() {
+                window.location.href = 'main_index.html';
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!-- 표준 헤더 구조 -->
+<!-- 상단 유틸리티 바 -->
+<div class="utility-bar">
+    <div class="utility-container">
+        <div class="utility-left">
+            <span class="page-title-indicator"></span>
+        </div>
+        <div class="utility-right">
+            <a href="system_architecture.html">시스템 구성도</a>
+        </div>
+    </div>
+</div>
+
+<!-- 메인 헤더 -->
+<header class="main-header">
+    <div class="header-container">
+        <div class="logo-area">
+            <div class="logo-partnership">
+                <a href="main_index.html"><img src="images/한국도로공사_logo.png" alt="한국도로공사" class="client-logo"></a>
+                <span class="partnership-divider">×</span>
+                <a href="main_index.html"><img src="images/ds_logo.svg" alt="DataStreams" class="datastreams-logo-img"></a>
+            </div>
+        </div>
+        <nav class="main-nav">
+            <a href="main_index.html" data-page="main">홈</a>
+            <a href="current_status.html" data-page="current">현황보고</a>
+            <a href="core_features.html" data-page="core">기능시연</a>
+            <a href="stt_automation.html" data-page="stt">STT 자동화</a>
+            <a href="mcp_automation.html" data-page="mcp">MCP 자동화</a>
+            <a href="image_search.html" data-page="image">이미지 검색</a>
+            <a href="system_architecture.html" data-page="system">시스템 구성도</a>
+        </nav>
+    </div>
+</header>
+
+<script>
+// 헤더 활성화 및 공통 기능
+document.addEventListener('DOMContentLoaded', function() {
+    // 현재 페이지 감지 및 네비게이션 활성화
+    const currentPage = window.location.pathname.split('/').pop().replace('.html', '');
+    const navLinks = document.querySelectorAll('.main-nav a');
+    
+    navLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        if (href.includes(currentPage) || 
+            (currentPage === '' && href === 'main_index.html') ||
+            (currentPage === 'index' && href === 'main_index.html')) {
+            link.classList.add('active');
+        }
+    });
+
+    // 로고 클릭 이벤트
+    document.querySelectorAll('.client-logo, .datastreams-logo-img').forEach(logo => {
+        logo.addEventListener('click', function() {
+            window.location.href = 'main_index.html';
+        });
+    });
+});
+</script>

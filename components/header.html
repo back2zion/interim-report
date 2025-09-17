@@ -1,0 +1,71 @@
+<!-- 상단 유틸리티 바 -->
+<div class="utility-bar">
+    <div class="utility-container">
+        <div class="utility-left">
+            <span data-page-title>ex-GPT 중간보고</span>
+        </div>
+        <div class="utility-right">
+            <a href="system_architecture.html">시스템 구성도</a>
+        </div>
+    </div>
+</div>
+
+<!-- 메인 헤더 -->
+<header class="main-header">
+    <div class="header-container">
+        <div class="logo-section">
+            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCA1MCA1MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjUwIiBoZWlnaHQ9IjUwIiByeD0iOCIgZmlsbD0iIzE5NzZkMiIvPgo8cGF0aCBkPSJNMTUgMjBIMzVWMjJIMTVWMjBaTTEwIDI1SDQwVjI3SDEwVjI1Wk0xNSAzMEgzNVYzMkgxNVYzMFoiIGZpbGw9IndoaXRlIi8+CjxjaXJjbGUgY3g9IjM3IiBjeT0iMTMiIHI9IjMiIGZpbGw9IiNmZmY5YzQiLz4KPC9zdmc+" alt="ex-GPT Logo" class="logo">
+            <div class="title-group">
+                <h1 data-main-title>ex-GPT 시스템</h1>
+                <div class="subtitle">한국도로공사 • DataStreams</div>
+            </div>
+        </div>
+        <nav class="nav-buttons" data-nav-buttons>
+            <a href="main_index.html" class="nav-btn" data-nav="main">📋 개요</a>
+            <a href="current_status.html" class="nav-btn" data-nav="status">📊 현황</a>
+            <a href="core_features.html" class="nav-btn" data-nav="features">🎯 핵심기능</a>
+            <a href="stt_automation.html" class="nav-btn" data-nav="stt">🎤 STT자동화</a>
+            <a href="mcp_automation.html" class="nav-btn" data-nav="mcp">🔧 MCP자동화</a>
+            <a href="image_search.html" class="nav-btn" data-nav="image">🔍 이미지검색</a>
+        </nav>
+    </div>
+</header>
+
+<script>
+// 현재 페이지에 따라 활성 네비게이션 설정
+document.addEventListener('DOMContentLoaded', function() {
+    const currentPage = window.location.pathname.split('/').pop().replace('.html', '');
+    const navButtons = document.querySelectorAll('[data-nav]');
+
+    navButtons.forEach(btn => {
+        const navType = btn.getAttribute('data-nav');
+        if (
+            (currentPage === 'main_index' && navType === 'main') ||
+            (currentPage === 'current_status' && navType === 'status') ||
+            (currentPage === 'core_features' && navType === 'features') ||
+            (currentPage === 'stt_automation' && navType === 'stt') ||
+            (currentPage === 'mcp_automation' && navType === 'mcp') ||
+            (currentPage === 'image_search' && navType === 'image')
+        ) {
+            btn.classList.add('active');
+        }
+    });
+
+    // 페이지별 제목 설정
+    const pageTitle = document.querySelector('[data-page-title]');
+    const mainTitle = document.querySelector('[data-main-title]');
+
+    const pageTitles = {
+        'main_index': '개요 | ex-GPT 중간보고',
+        'current_status': '현황 보고 | ex-GPT 중간보고',
+        'core_features': '핵심 기능 | ex-GPT 중간보고',
+        'stt_automation': 'STT 자동화 | ex-GPT 중간보고',
+        'mcp_automation': 'MCP 자동화 | ex-GPT 중간보고',
+        'image_search': '이미지 검색 | ex-GPT 중간보고'
+    };
+
+    if (pageTitle && pageTitles[currentPage]) {
+        pageTitle.textContent = pageTitles[currentPage];
+    }
+});
+</script>
